@@ -1,28 +1,32 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class SpawnCube : MonoBehaviour
+namespace Spawn
 {
-    private void OnMouseUpAsButton()
+    public class SpawnCube : MonoBehaviour
     {
-        int _countCube = Random.Range(2, 7);
-        float randomPercent = Random.Range(0, 11);
-        float spawnPercent = gameObject.transform.localScale.x * 10;
+        [SerializeField] private Cube _newCube;
         
-        if (spawnPercent >= randomPercent)
+        private void OnMouseUpAsButton()
         {
-            for (int i = 0; i < _countCube; i++)
+            Vector3 localScale = transform.localScale;
+            int countCube = Random.Range(2, 7);
+            float spawnPercent = _newCube.GetSpawnPercent();
+            float randomPercent = Random.Range(0, 11);
+            float divider = 2f;
+            
+            if (spawnPercent >= randomPercent)
             {
-                float cannalR = Random.Range(0f, 1f); 
-                float cannalG = Random.Range(0f, 1f);
-                float cannalB = Random.Range(0f, 1f);
-                GameObject newCube = Instantiate(gameObject);
-                newCube.GetComponent<Renderer>().material.color = new Color(cannalR, cannalG, cannalB);
-                Vector3 cubeScale = new Vector3(gameObject.transform.localScale.x, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
-                newCube.transform.localScale = cubeScale / 2;
+                for (int i = 0; i < countCube; i++)
+                {
+                    _newCube = Instantiate(_newCube);
+                    _newCube.SetSpawnPercent(spawnPercent, divider);
+                    Vector3 cubeScale = new Vector3(localScale.x, localScale.y, localScale.z);
+                    _newCube.transform.localScale = cubeScale / divider;
+                }
             }
-        }
         
-        Destroy(gameObject);
+            Destroy(gameObject);
+        }
     }
 }

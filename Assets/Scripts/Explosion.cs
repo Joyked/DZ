@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Explosion : MonoBehaviour
 {
 
@@ -24,12 +23,12 @@ public class Explosion : MonoBehaviour
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, _explosionRadius);
 
-        List<Rigidbody> cube = new();
+        List<Rigidbody> cubes = new();
 
         foreach (Collider hit in hits)
             if (hit.attachedRigidbody != null)
-                cube.Add(hit.attachedRigidbody);
+                cubes.Add(hit.attachedRigidbody);
         
-        return cube;
+        return cubes;
     }
 }
