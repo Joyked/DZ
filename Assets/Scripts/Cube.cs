@@ -1,13 +1,19 @@
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Spawn
 {
+    [RequireComponent(typeof(Renderer))]
+    
     public class Cube : MonoBehaviour
     {
-        private float _spawnPercent = 10f;
+        private float divider = 2f;
+        private SpawnCube _spawnCube;
+        
         private void Awake()
         {
+            _spawnCube = GetComponent<SpawnCube>();
             Renderer renderer = GetComponent<Renderer>();
             float cannalR = Random.Range(0f, 1f); 
             float cannalG = Random.Range(0f, 1f);
@@ -15,14 +21,14 @@ namespace Spawn
             renderer.material.color = new Color(cannalR, cannalG, cannalB);
         }
 
-        public void SetSpawnPercent(float percent, float divider)
+        public void InitScale(Vector3 scale)
         {
-            _spawnPercent = percent / divider;
+            transform.localScale = scale / divider;
         }
         
-        public float GetSpawnPercent()
+        private void OnMouseUpAsButton()
         {
-            return _spawnPercent;
+            _spawnCube.SpawnNew();
         }
     }
 }

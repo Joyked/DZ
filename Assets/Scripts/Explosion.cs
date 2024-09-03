@@ -1,34 +1,20 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Explosion : MonoBehaviour
 {
-
     [SerializeField] private float _explosionForce;
     [SerializeField] private float _explosionRadius;
+    private Rigidbody _rigidbody;
 
-    private void OnMouseUpAsButton()
+    private void Awake()
     {
-        Explode();
-        Destroy(gameObject);
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
-    private void Explode()
+    public void ScatterTheCube(Vector3 positionExplosion)
     {
-        foreach (Rigidbody explodableObject in GetExplodableObjects())
-            explodableObject.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
-    }
-    
-    private List<Rigidbody> GetExplodableObjects()
-    {
-        Collider[] hits = Physics.OverlapSphere(transform.position, _explosionRadius);
-
-        List<Rigidbody> cubes = new();
-
-        foreach (Collider hit in hits)
-            if (hit.attachedRigidbody != null)
-                cubes.Add(hit.attachedRigidbody);
-        
-        return cubes;
+        _rigidbody.AddExplosionForce(_explosionForce, positionExplosion, _explosionRadius);
     }
 }
