@@ -1,20 +1,18 @@
-using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Explosion : MonoBehaviour
+namespace InteractionWithCube
 {
-    [SerializeField] private float _explosionForce;
-    [SerializeField] private float _explosionRadius;
-    private Rigidbody _rigidbody;
-
-    private void Awake()
+    public class Explosion : MonoBehaviour
     {
-        _rigidbody = GetComponent<Rigidbody>();
-    }
+        [SerializeField] private float _explosionForce;
+        private float _explosionRadius;
+        private Rigidbody _rigidbody;
 
-    public void ScatterTheCube(Vector3 positionExplosion)
-    {
-        _rigidbody.AddExplosionForce(_explosionForce, positionExplosion, _explosionRadius);
+        public void ScatterTheCube(Cube cube)
+        {
+            _rigidbody = cube.GetComponent<Rigidbody>();
+            _rigidbody.AddExplosionForce(_explosionForce, cube.transform.position, _explosionRadius);
+        }
     }
 }
+

@@ -2,18 +2,24 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Spawn
+namespace InteractionWithCube
 {
     [RequireComponent(typeof(Renderer))]
+    [RequireComponent(typeof(Rigidbody))]
     
     public class Cube : MonoBehaviour
     {
-        private float divider = 2f;
-        private SpawnCube _spawnCube;
+        public static event Action<Transform, float> ClickedOnCube;   
+        public Transform TransformCube { get; private set; }
+        public float ProbabilityOfDisintegration { get; private set; } = 10f;
+        
+        public void ReduceChanceSpawn(float chance)
+        {
+            ProbabilityOfDisintegration = chance / 2f;
+        }
         
         private void Awake()
         {
-            _spawnCube = GetComponent<SpawnCube>();
             Renderer renderer = GetComponent<Renderer>();
             float cannalR = Random.Range(0f, 1f); 
             float cannalG = Random.Range(0f, 1f);
@@ -21,14 +27,11 @@ namespace Spawn
             renderer.material.color = new Color(cannalR, cannalG, cannalB);
         }
 
-        public void InitScale(Vector3 scale)
-        {
-            transform.localScale = scale / divider;
-        }
-        
         private void OnMouseUpAsButton()
         {
-            _spawnCube.SpawnNew();
+            TransformCube = transform;
+            ClickedOnCube?.Invoke(TransformCube, ProbabilityOfDisintegration);
+            Destroy(gameObject);
         }
     }
 }

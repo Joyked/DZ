@@ -1,37 +1,42 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Spawn
+namespace InteractionWithCube
 {
     public class SpawnCube : MonoBehaviour
     {
         [SerializeField] private Cube _newCube;
-        private float _spawnPercent = 10;
+        [SerializeField] private Explosion _explosion;
         
-        public void SpawnNew()
+        private void SpawnNew(Transform transformCube, float probabilityOfDisintegration)
         {
             int countCube = Random.Range(2, 7);
             float randomPercent = Random.Range(0, 11);
             float divider = 2f;
+            Debug.Log(probabilityOfDisintegration);
             
-            if (_spawnPercent >= randomPercent)
+            if (probabilityOfDisintegration >= randomPercent)
             {
                 for (int i = 0; i < countCube; i++)
                 {
+                    float chanceSpawn = probabilityOfDisintegration;
                     _newCube = Instantiate(_newCube);
-                    _newCube.InitScale(transform.localScale);
-                    _newCube.GetComponent<SpawnCube>().InitSpawnPercent(_spawnPercent);
-                    _newCube.GetComponent<Explosion>().ScatterTheCube(transform.position);
+                    _explosion.ScatterTheCube(_newCube);
+                    _newCube.transform.position = transformCube.position;
+                    _newCube.transform.localScale = transformCube.localScale / divider;
+                    _newCube.ReduceChanceSpawn(chanceSpawn);
                 }
             }
+        }
         
-            Destroy(gameObject);
+        private void OnEnable()
+        {
+            Cube.ClickedOnCube += SpawnNew;
         }
 
-        public void InitSpawnPercent(float spawnPercent)
+        private void OnDisable()
         {
-            float divider = 2f;
-            _spawnPercent = spawnPercent / divider;
+            Cube.ClickedOnCube -= SpawnNew;
         }
     }
 }
