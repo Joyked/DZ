@@ -31,7 +31,6 @@ namespace InteractionWithCube
         {
             TransformCube = transform;
             ClickedOnCube?.Invoke(TransformCube, ProbabilityOfDisintegration);
-            Destroy(gameObject);
         }
     }
 }

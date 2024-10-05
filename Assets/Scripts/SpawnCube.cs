@@ -13,20 +13,25 @@ namespace InteractionWithCube
             int countCube = Random.Range(2, 7);
             float randomPercent = Random.Range(0, 11);
             float divider = 2f;
-            Debug.Log(probabilityOfDisintegration);
             
             if (probabilityOfDisintegration >= randomPercent)
             {
                 for (int i = 0; i < countCube; i++)
                 {
                     float chanceSpawn = probabilityOfDisintegration;
-                    _newCube = Instantiate(_newCube);
-                    _explosion.ScatterTheCube(_newCube);
-                    _newCube.transform.position = transformCube.position;
-                    _newCube.transform.localScale = transformCube.localScale / divider;
-                    _newCube.ReduceChanceSpawn(chanceSpawn);
+                    Cube newCube = Instantiate(_newCube);
+                    _explosion.ScatterTheNewCube(newCube);
+                    newCube.transform.position = transformCube.position;
+                    newCube.transform.localScale = transformCube.localScale / divider;
+                    newCube.ReduceChanceSpawn(chanceSpawn);
                 }
             }
+            else
+            {
+                _explosion.ScatterNeighboringCubes(transformCube.gameObject.GetComponent<Cube>());
+            }
+            
+            Destroy(transformCube.gameObject);
         }
         
         private void OnEnable()
