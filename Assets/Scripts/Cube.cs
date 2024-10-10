@@ -1,37 +1,22 @@
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace InteractionWithCube
+public class Cube : MonoBehaviour
 {
-    [RequireComponent(typeof(Renderer))]
-    [RequireComponent(typeof(Rigidbody))]
-    
-    public class Cube : MonoBehaviour
-    {
-        public static event Action<Transform, float> ClickedOnCube;   
-        public Transform TransformCube { get; private set; }
-        public float ProbabilityOfDisintegration { get; private set; } = 10f;
-        
-        public void ReduceChanceSpawn(float chance)
-        {
-            ProbabilityOfDisintegration = chance / 2f;
-        }
-        
-        private void Awake()
-        {
-            Renderer renderer = GetComponent<Renderer>();
-            float cannalR = Random.Range(0f, 1f); 
-            float cannalG = Random.Range(0f, 1f);
-            float cannalB = Random.Range(0f, 1f);
-            renderer.material.color = new Color(cannalR, cannalG, cannalB);
-        }
+    public static event Action<Cube> CubeHasLanded;
+    public bool HasCubeHasLanded { get; private set; } = false;
 
-        private void OnMouseUpAsButton()
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.TryGetComponent(out Platform platform) && !HasCubeHasLanded)
         {
-            TransformCube = transform;
-            ClickedOnCube?.Invoke(TransformCube, ProbabilityOfDisintegration);
+            HasCubeHasLanded = true;
+            CubeHasLanded?.Invoke(this);
         }
     }
-}
 
+    public void ReturnToSpawn()
+    {
+        HasCubeHasLanded = false;
+    }
+}
