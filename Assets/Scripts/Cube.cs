@@ -1,22 +1,28 @@
-using System;
 using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
-    public static event Action<Cube> CubeHasLanded;
+    private Material _material;
+    
     public bool HasCubeHasLanded { get; private set; } = false;
 
-    private void OnCollisionEnter(Collision other)
+    private void Awake()
     {
-        if (other.transform.TryGetComponent(out Platform platform) && !HasCubeHasLanded)
-        {
-            HasCubeHasLanded = true;
-            CubeHasLanded?.Invoke(this);
-        }
+        _material = GetComponent<Renderer>().material;
     }
 
     public void ReturnToSpawn()
     {
         HasCubeHasLanded = false;
+    }
+
+    public void Fall()
+    {
+        HasCubeHasLanded = true;
+    }
+
+    public Material GetMaterial()
+    {
+        return _material;
     }
 }

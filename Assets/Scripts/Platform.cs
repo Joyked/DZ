@@ -1,16 +1,16 @@
+using System;
 using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public event Action<Cube> CubeHasLanded;
+    
+    private void OnCollisionEnter(Collision other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (other.transform.TryGetComponent(out Cube cube) && cube.HasCubeHasLanded == false)
+        {
+            CubeHasLanded?.Invoke(cube);
+            cube.Fall();
+        }
     }
 }

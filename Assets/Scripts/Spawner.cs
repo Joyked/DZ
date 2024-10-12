@@ -5,12 +5,14 @@ using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
 {
+    [SerializeField] private AllPlatforms _allPlatforms;
     [SerializeField] private CubeColorizer _cubeColorizer;
     [SerializeField] private GameObject _prefab;
     [SerializeField] private int _poolCapacity = 5;
     [SerializeField] private int _poolMaxSize = 5;
 
     private ObjectPool<GameObject> _pool;
+    private Renderer _rendererCube;
 
     private void Awake()
     {
@@ -26,9 +28,17 @@ public class Spawner : MonoBehaviour
         );
 
         for (int i = 0; i < _poolCapacity; i++)
-        {
             _pool.Get();
-        }
+    }
+    
+    private void OnEnable()
+    {
+        _allPlatforms.CubeHere += ReturnToPool;
+    }
+
+    private void OnDisable()
+    {
+        _allPlatforms.CubeHere -= ReturnToPool;
     }
 
     private GameObject CreateCube()
@@ -43,8 +53,13 @@ public class Spawner : MonoBehaviour
         Cube cube = obj.GetComponent<Cube>();
         cube.ReturnToSpawn();
         _cubeColorizer.ResetColor(cube);
-        float randomPositionX = Random.Range(-7, 8);
-        float randomPositionZ = Random.Range(-4, 5);
+
+        float minXPosition = -7f;
+        float maxXPosition = 8f;
+        float minZPosition = -4f;
+        float maxZPosition = 5f;
+        float randomPositionX = Random.Range(minXPosition, maxXPosition);
+        float randomPositionZ = Random.Range(minZPosition, maxZPosition);
         float positionY = 25;
         obj.transform.position = new Vector3(randomPositionX, positionY, randomPositionZ);
     }
@@ -65,20 +80,10 @@ public class Spawner : MonoBehaviour
         }
     }
     
-    IEnumerator CubeCycle(float second, Cube cube)
+    private IEnumerator CubeCycle(float second, Cube cube)
     {
         yield return new WaitForSeconds(second);
         _pool.Release(cube.gameObject);
         _pool.Get();
-    }
-    
-    private void OnEnable()
-    {
-        Cube.CubeHasLanded += ReturnToPool;
-    }
-
-    private void OnDisable()
-    {
-        Cube.CubeHasLanded -= ReturnToPool;
     }
 }
