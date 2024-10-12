@@ -669,9 +669,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d55d2a7c5fa5af9409dea1a264c7494c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allPlatforms: {fileID: 1497440444}
   _cubeColorizer: {fileID: 1708333482}
-  _prefab: {fileID: 4828079704679665165, guid: d61b8b8127c71c140a3abe47515332c4, type: 3}
+  _prefabCube: {fileID: 4828079704679665163, guid: d61b8b8127c71c140a3abe47515332c4, type: 3}
   _poolCapacity: 50
   _poolMaxSize: 50
 --- !u!4 &1332181357
@@ -825,7 +824,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1497440442}
   - component: {fileID: 1497440443}
-  - component: {fileID: 1497440444}
   m_Layer: 0
   m_Name: Platforms
   m_TagString: Untagged
@@ -864,23 +862,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86504a5742b3c7649a09d29d4955326d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1497440444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1497440441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c662d83b19654d3408c055ba0b9a00d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _platforms:
-  - {fileID: 1743889183}
-  - {fileID: 1494409053}
-  - {fileID: 979265113}
-  - {fileID: 1932389554}
 --- !u!1 &1590158633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,8 +1085,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27a6496b859e2834295b21d3badf8313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrafab: {fileID: 4828079704679665163, guid: d61b8b8127c71c140a3abe47515332c4, type: 3}
-  _allPlatforms: {fileID: 1497440444}
 --- !u!4 &1708333483
 Transform:
   m_ObjectHideFlags: 0

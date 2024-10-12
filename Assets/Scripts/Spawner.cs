@@ -5,13 +5,13 @@ using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private AllPlatforms _allPlatforms;
     [SerializeField] private CubeColorizer _cubeColorizer;
-    [SerializeField] private GameObject _prefab;
+    [SerializeField] private Cube _prefabCube;
     [SerializeField] private int _poolCapacity = 5;
     [SerializeField] private int _poolMaxSize = 5;
 
     private ObjectPool<GameObject> _pool;
+    private Cube[] _cubes;
     private Renderer _rendererCube;
 
     private void Awake()
@@ -26,24 +26,29 @@ public class Spawner : MonoBehaviour
             defaultCapacity: _poolCapacity,
             maxSize: _poolMaxSize
         );
-
+        
+        _cubes = new Cube[_poolMaxSize];
+        
         for (int i = 0; i < _poolCapacity; i++)
-            _pool.Get();
+            _cubes[i] = _pool.Get().GetComponent<Cube>();
     }
     
     private void OnEnable()
     {
-        _allPlatforms.CubeHere += ReturnToPool;
+        foreach (Cube cube in _cubes)
+           cube.IsGround += ReturnToPool;
     }
+         
 
     private void OnDisable()
     {
-        _allPlatforms.CubeHere -= ReturnToPool;
+        foreach (Cube cube in _cubes)
+            cube.IsGround -= ReturnToPool;
     }
 
     private GameObject CreateCube()
     {
-        GameObject cube = Instantiate(_prefab);
+        GameObject cube = Instantiate(_prefabCube.gameObject);
         return cube;
     }
 
@@ -73,6 +78,7 @@ public class Spawner : MonoBehaviour
     {
         if (cube.HasCubeHasLanded)
         {
+            _cubeColorizer.Repaint(cube);
             int minSecond = 2;
             int maxSecond = 6;
             int randomSecond = Random.Range(minSecond, maxSecond);

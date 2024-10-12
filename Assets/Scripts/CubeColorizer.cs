@@ -3,27 +3,12 @@ using Random = UnityEngine.Random;
 
 public class CubeColorizer : MonoBehaviour
 {
-    [SerializeField] private Cube _cubePrafab;
-    [SerializeField] private AllPlatforms _allPlatforms;
-
-    private Cube _cube;
-    
-    private void OnEnable()
-    {
-        _allPlatforms.CubeHere += RepaintCube;
-    }
-
-    private void OnDisable()
-    {
-        _allPlatforms.CubeHere -= RepaintCube;
-    }
-    
     public void ResetColor(Cube cube)
     {
         cube.GetMaterial().color = Color.white;
     }
     
-    private void RepaintCube(Cube cube)
+    public void Repaint(Cube cube)
     {
         if (cube.HasCubeHasLanded)
         {
