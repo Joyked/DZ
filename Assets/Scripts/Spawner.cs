@@ -5,18 +5,16 @@ using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private CubeColorizer _cubeColorizer;
     [SerializeField] private Cube _prefabCube;
-    [SerializeField] private int _poolCapacity = 5;
-    [SerializeField] private int _poolMaxSize = 5;
+    [SerializeField] private int _poolCapacity;
+    [SerializeField] private int _poolMaxSize;
 
-    private ObjectPool<GameObject> _pool;
+    private ObjectPool<Cube> _pool;
     private Cube[] _cubes;
-    private Renderer _rendererCube;
 
     private void Awake()
     {
-        _pool = new ObjectPool<GameObject>
+        _pool = new ObjectPool<Cube>
         (
             CreateCube,
             ActionOnGet,
@@ -27,38 +25,31 @@ public class Spawner : MonoBehaviour
             maxSize: _poolMaxSize
         );
         
-        _cubes = new Cube[_poolMaxSize];
-        
+        _cubes = new Cube[_poolCapacity];
+
         for (int i = 0; i < _poolCapacity; i++)
-            _cubes[i] = _pool.Get().GetComponent<Cube>();
+            _cubes[i] = _pool.Get();
     }
     
     private void OnEnable()
     {
         foreach (Cube cube in _cubes)
-           cube.IsGround += ReturnToPool;
+           cube.Fell += ReturnToPool;
     }
-         
-
+    
     private void OnDisable()
     {
         foreach (Cube cube in _cubes)
-            cube.IsGround -= ReturnToPool;
+            cube.Fell -= ReturnToPool;
     }
 
-    private GameObject CreateCube()
+    private Cube CreateCube()
     {
-        GameObject cube = Instantiate(_prefabCube.gameObject);
-        return cube;
+        return Instantiate(_prefabCube);
     }
 
-    private void ActionOnGet(GameObject obj)
+    private void ActionOnGet(Cube cube)
     {
-        obj.SetActive(true);
-        Cube cube = obj.GetComponent<Cube>();
-        cube.ReturnToSpawn();
-        _cubeColorizer.ResetColor(cube);
-
         float minXPosition = -7f;
         float maxXPosition = 8f;
         float minZPosition = -4f;
@@ -66,30 +57,28 @@ public class Spawner : MonoBehaviour
         float randomPositionX = Random.Range(minXPosition, maxXPosition);
         float randomPositionZ = Random.Range(minZPosition, maxZPosition);
         float positionY = 25;
-        obj.transform.position = new Vector3(randomPositionX, positionY, randomPositionZ);
+        cube.transform.position = new Vector3(randomPositionX, positionY, randomPositionZ);
+        
+        cube.gameObject.SetActive(true);
     }
 
-    private void ActionOnRelease(GameObject obj)
+    private void ActionOnRelease(Cube cube)
     {
-        obj.SetActive(false);
+        cube.gameObject.SetActive(false);
     }
     
     private void ReturnToPool(Cube cube)
     {
-        if (cube.HasCubeHasLanded)
-        {
-            _cubeColorizer.Repaint(cube);
             int minSecond = 2;
             int maxSecond = 6;
             int randomSecond = Random.Range(minSecond, maxSecond);
             StartCoroutine(CubeCycle(randomSecond, cube));
-        }
     }
     
     private IEnumerator CubeCycle(float second, Cube cube)
     {
         yield return new WaitForSeconds(second);
-        _pool.Release(cube.gameObject);
+        _pool.Release(cube);
         _pool.Get();
     }
 }

@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Cube : MonoBehaviour
 {
     private Material _material;
     
-    public event Action<Cube> IsGround;
+    public event Action<Cube> Fell;
     
     public bool HasCubeHasLanded { get; private set; } = false;
 
@@ -14,26 +15,31 @@ public class Cube : MonoBehaviour
         _material = GetComponent<Renderer>().material;
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        if (HasCubeHasLanded == false && other.transform.TryGetComponent<Platform>(out Platform platform))
-        {
-            Fall();
-            IsGround?.Invoke(this);
-        }
-    }
-    public void ReturnToSpawn()
+    private void OnEnable()
     {
         HasCubeHasLanded = false;
     }
 
-    public void Fall()
+    private void OnDisable()
     {
-        HasCubeHasLanded = true;
+        _material.color = Color.white;
     }
 
-    public Material GetMaterial()
+    private void OnCollisionEnter(Collision other)
     {
-        return _material;
+        if (HasCubeHasLanded == false && other.transform.TryGetComponent<Platform>(out Platform platform))
+        {
+            HasCubeHasLanded = true;
+            Repaint();
+            Fell?.Invoke(this);
+        }
+    }
+
+    private void Repaint()
+    {
+        float canalR = Random.Range(0f, 1f); 
+        float canalG = Random.Range(0f, 1f);
+        float canalB = Random.Range(0f, 1f);
+        _material.color = new Color(canalR, canalG, canalB);
     }
 }

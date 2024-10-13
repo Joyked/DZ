@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlatformRotate.cs" />
     <Compile Include="Assets\Scripts\Cube.cs" />
-    <Compile Include="Assets\Scripts\CubeColorizer.cs" />
     <Compile Include="Assets\Scripts\Spawner.cs" />
     <Compile Include="Assets\Scripts\Platform.cs" />
     <Reference Include="UnityEngine">
